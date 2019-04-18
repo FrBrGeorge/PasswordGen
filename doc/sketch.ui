@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="Tk">
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">PasswordGen</property>
+    <child>
+      <object class="ttk.Frame" id="root">
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="5">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Labelframe" id="fAlgorithm">
+            <property name="padding">5</property>
+            <property name="text" translatable="yes">Алгоритм</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nsew</property>
+              <rows>
+                <row id="0">
+                  <property name="pad">5</property>
+                </row>
+                <row id="1">
+                  <property name="pad">5</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="pad">5</property>
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Combobox" id="cmbAlgorithm">
+                <property name="textvariable">string:v</property>
+                <property name="values">"Выбор алгоритма"</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Frame" id="fAlgParams">
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                  <columns>
+                    <column id="0">
+                      <property name="weight">1</property>
+                    </column>
+                    <column id="2">
+                      <property name="weight">1</property>
+                    </column>
+                  </columns>
+                </layout>
+                <child>
+                  <object class="ttk.Label" id="lWNum">
+                    <property name="text" translatable="yes">Слов:</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Entry" id="eWNum">
+                    <property name="text" translatable="yes">3</property>
+                    <property name="textvariable">int:vWNum</property>
+                    <property name="width">3</property>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="lMinW">
+                    <property name="text" translatable="yes">Min длина:</property>
+                    <layout>
+                      <property name="column">2</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Entry" id="eMinW">
+                    <property name="text" translatable="yes">3</property>
+                    <property name="textvariable">int:vMinW</property>
+                    <property name="width">3</property>
+                    <layout>
+                      <property name="column">3</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Label" id="lMaxW">
+                    <property name="text" translatable="yes">Max длина:</property>
+                    <layout>
+                      <property name="column">4</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Entry" id="eMaxW">
+                    <property name="text" translatable="yes">12</property>
+                    <property name="textvariable">int:vMaxW</property>
+                    <property name="width">3</property>
+                    <layout>
+                      <property name="column">5</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="cmbDict">
+            <property name="values">"Словарь"</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Combobox" id="cmbSeps">
+            <property name="values">"Разделители"</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">4</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Text" id="tPasswords">
+            <property name="height">10</property>
+            <property name="text" translatable="yes">Вывод
+нескольких
+вариантов
+пассфразы</property>
+            <property name="width">50</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">5</property>
+              <property name="sticky">nw</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="fGenerate">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">6</property>
+              <property name="sticky">nw</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="bGenerate">
+                <property name="text" translatable="yes">Сгенерировать</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nw</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="lSeed">
+                <property name="text" translatable="yes">Номер последовательности:</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Entry" id="eSeed">
+                <property name="text" translatable="yes">100500</property>
+                <property name="textvariable">int:vSeed</property>
+                <property name="width">16</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
