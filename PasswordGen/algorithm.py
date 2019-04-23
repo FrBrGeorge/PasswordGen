@@ -8,6 +8,26 @@ import random
 from itertools import chain, zip_longest
 from tools import EN, RU, pair
 
+def pronounceable(width=(8,12), voc=EN, seed=None):
+    """Generate a pronounceable word (vowel-consonant)+ type
+    voc is a pair of vocabularies (vowels, consonants), default is EN
+    you can provide seed for the sake of reproducibility
+    >>> pronounceable(seed=1)
+    'AMORICWOT'
+    >>> pronounceable(10,seed=100500)
+    'FENUPAUYAY'
+    >>> pronounceable(10,RU,seed=204)
+    'ЕДЫЦАПУЛЫМ'
+    """
+    if seed:
+        random.seed(seed)
+    width, i = random.randrange(*pair(width)), random.randrange(2)
+    ret = ""
+    while len(ret)<width:
+        ret += voc[i][random.random()]
+        i = 1 - i
+    return ret[:width]
+
 def passphrase(words, seps, nwords, wboundary=None, seed=None):
     '''Generate passphrase from nwords of words when word len in nboundary
     >>> len(passphrase("1234567890","+-*/", 8))
