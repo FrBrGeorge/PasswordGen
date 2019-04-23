@@ -26,6 +26,10 @@ def pair(r):
             return r, r+1
 
 class Voc:
+    '''Vocabulary
+        >>> print(*(EN[0][i/7] for i in range(7)))
+          A O U I E
+    '''
     def __init__(self, chars, probs=[], empty=True):
         '''Create {char[i]:probs[i]} dict from chars
         with uniform probability by default,
@@ -38,8 +42,6 @@ class Voc:
         A:0.250 B:0.250 C:0.250 D:0.250
         >>> print(Voc("+-*",(1,2,3),empty=False))
         +:0.167 -:0.333 *:0.500
-        >>> print(*(EN[0][i/7] for i in range(7)))
-          A O U I E
         '''
         if empty:
             chars = ("",)+tuple(chars)
@@ -54,13 +56,22 @@ class Voc:
         return " ".join(f"{k}:{v:5.3f}" for k,v in self.vocabulary.items())
 
     def __getitem__(self, idx):
+        """Voc[prob] — select k: sum(probs[:i])<idx<=sum(probs[:i+1])
+        >>> Voc("QWERTYU")[4/7]
+        'R'
+        >>> Voc("QWERTYU")[2]
+        'W'
+        >>> Voc("QWERTYU")[0]
+        ''
+        """
         if type(idx) is float:
             s = 0
             for k, v in self.vocabulary.items():
                 s += v
                 if s>=idx: break
             return k
-
+        else:
+            return tuple(self.vocabulary.keys())[idx]
 
 RU = Voc("АОУЫЭЯЁЮИЕ"), Voc("БВГДЖЗЙКЛМНПРСТФХЦЧШЩ")
 EN = Voc("AOUIE"), Voc("BCDFGHJKLMNPQRSTVWXYZ")
