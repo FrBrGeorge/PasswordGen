@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
 '''
 Some common tools
-
->>> [f"{a}{c:.3}" for f in EN for a,c in f.items()]
-['0.167', 'A0.167', 'O0.167', 'U0.167', 'I0.167', 'E0.167', '0.0455', 'B0.0455', 'C0.0455', 'D0.0455', 'F0.0455', 'G0.0455', 'H0.0455', 'J0.0455', 'K0.0455', 'L0.0455', 'M0.0455', 'N0.0455', 'P0.0455', 'Q0.0455', 'R0.0455', 'S0.0455', 'T0.0455', 'V0.0455', 'W0.0455', 'X0.0455', 'Y0.0455', 'Z0.0455']
+>>> print(*EN)
+:0.167 A:0.167 O:0.167 U:0.167 I:0.167 E:0.167 :0.045 B:0.045 C:0.045 D:0.045 F:0.045 G:0.045 H:0.045 J:0.045 K:0.045 L:0.045 M:0.045 N:0.045 P:0.045 Q:0.045 R:0.045 S:0.045 T:0.045 V:0.045 W:0.045 X:0.045 Y:0.045 Z:0.045
 '''
 # runargs: -i
 
-def createvoc(chars):
-    '''Create {char:probability} dicte from chars
-    with uniform probability, all theese includes "" added to characters
-    '''
-    return dict(zip(("",)+tuple(chars),(1/(len(chars)+1),)*(len(chars)+1)))
+import random
 
 def pair(r):
     '''Convert a number, or a range, or a pair into pair:
@@ -30,6 +25,42 @@ def pair(r):
         except:
             return r, r+1
 
-RU = createvoc("АОУЫЭЯЁЮИЕ"), createvoc("БВГДЖЗЙКЛМНПРСТФХЦЧШЩ")
-EN = createvoc("AOUIE"), createvoc("BCDFGHJKLMNPQRSTVWXYZ")
+class Voc:
+    def __init__(self, chars, probs=[], empty=True):
+        '''Create {char[i]:probs[i]} dict from chars
+        with uniform probability by default,
+        edding empty char "" as element
+        if probs if defined, it must have length of chars (or +1 if empty included)
+        probabilities are normalized against sum(probs)
+        >>> print(Voc("1234567890"))
+        :0.091 1:0.091 2:0.091 3:0.091 4:0.091 5:0.091 6:0.091 7:0.091 8:0.091 9:0.091 0:0.091
+        >>> print(Voc("ABCD",empty=False))
+        A:0.250 B:0.250 C:0.250 D:0.250
+        >>> print(Voc("+-*",(1,2,3),empty=False))
+        +:0.167 -:0.333 *:0.500
+        >>> print(*(EN[0][i/7] for i in range(7)))
+          A O U I E
+        '''
+        if empty:
+            chars = ("",)+tuple(chars)
+        if not probs:
+            probs = (1/len(chars),)*len(chars)
+        else:
+            s = sum(probs)
+            probs = tuple(p/s for p in probs)
+        self.vocabulary = dict(zip(chars, probs))
 
+    def __str__(self):
+        return " ".join(f"{k}:{v:5.3f}" for k,v in self.vocabulary.items())
+
+    def __getitem__(self, idx):
+        if type(idx) is float:
+            s = 0
+            for k, v in self.vocabulary.items():
+                s += v
+                if s>=idx: break
+            return k
+
+
+RU = Voc("АОУЫЭЯЁЮИЕ"), Voc("БВГДЖЗЙКЛМНПРСТФХЦЧШЩ")
+EN = Voc("AOUIE"), Voc("BCDFGHJKLMNPQRSTVWXYZ")
