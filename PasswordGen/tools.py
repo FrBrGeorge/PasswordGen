@@ -7,6 +7,7 @@ Some common tools
 # runargs: -i
 
 import random
+from collections import Counter
 
 def pair(r):
     '''Convert a number, or a range, or a pair into pair:
@@ -42,14 +43,15 @@ class Voc:
         A:0.250 B:0.250 C:0.250 D:0.250
         >>> print(Voc("+-*",(1,2,3),empty=False))
         +:0.167 -:0.333 *:0.500
+        >>> print(Voc("ABBCCCDDDD",empty=False))
+        A:0.100 B:0.200 C:0.300 D:0.400
         '''
         if empty:
             chars = ("",)+tuple(chars)
         if not probs:
-            probs = (1/len(chars),)*len(chars)
-        else:
-            s = sum(probs)
-            probs = tuple(p/s for p in probs)
+            chars, probs = zip(*Counter(chars).items())
+        s = sum(probs)
+        probs = tuple(p/s for p in probs)
         self.vocabulary = dict(zip(chars, probs))
 
     def __str__(self):
