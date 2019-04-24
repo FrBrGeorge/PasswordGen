@@ -24,6 +24,7 @@ from collections import namedtuple
 import tarfile
 import io
 import re
+from html.parser import HTMLParser
 
 def get_txt(url, name):
     '''Get textfile with words
@@ -48,6 +49,53 @@ def get_tar(url, fname):
                 with v.extractfile(fname) as w:
                     return w.read().decode()
 
+class HTMLFilter(HTMLParser):
+    '''Filter text from HTML body
+>>> f=HTMLFilter()
+>>> s="""<html><body><ul>
+... <ul>
+...   <li><a href="/licenses/gpl.html">Последняя версия GPL, версия 3</a></li>
+...   <li><a href="/licenses/gpl-violation.html">Что делать, если вы видите возможное
+... нарушение GPL</a></li>
+...   <li><a href="/licenses/old-licenses/gpl-2.0-translations.html">Переводы
+... GPLv2</a></li>
+...   <li><a href="/licenses/old-licenses/gpl-2.0-faq.html">Вопросы и ответы о
+... GPLv2</a></li>
+... </ul></body></html>"""
+>>> f.feed(s)
+>>> print(f.text.strip())
+Последняя версия GPL, версия 3
+  Что делать, если вы видите возможное
+нарушение GPL
+  Переводы
+GPLv2
+  Вопросы и ответы о
+GPLv2
+    '''
+    visible = False
+    text = ""
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "body":
+            self.visible = True
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "body":
+            self.visible = False
+
+    def handle_data(self, data):
+        if self.visible:
+            self.text += data
+
+def get_html(url, fname):
+    '''Get html text and filter out all tags
+
+    >>> get_html("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html","").count("intended")
+    4
+    '''
+    flt = HTMLFilter()
+    flt.feed(urlopen(url).read().decode())
+    return flt.text
+
 def get(name):
     '''Get sequence of words from various sources
 
@@ -55,9 +103,18 @@ def get(name):
     'but'
     >>> get("linux.words")[12345]
     'determined'
+    >>> get("GPLv2").count("restrictions")
+    3
     '''
     url, name, get, flt = URLS[name]
     return re.findall(flt, get(url, name))
+
+def getvoc(name):
+    '''Get word list and unique sort them
+    >>> getvoc("google-10000-english")[-100]
+    'wrapped'
+    '''
+    return sorted(set(get(name)))
 
 reENG = re.compile(r"[A-Za-z]+")
 reRUS = re.compile(r"[А-Яа-я]+")
@@ -67,4 +124,6 @@ Site = namedtuple("URLS", "URL name get filter")
 
 URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt, reENG),
          "linux.words": Site("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz", "./usr/dict/linux.words", get_tar, reENG),
+         "anna-karenina": Site("http://tolstoy.ru/online/online-fiction/anna-karenina/", "anna-karenina", get_html, reRUS),
+         "GPLv2": Site("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html","gpl2", get_html, reENG),
        }
