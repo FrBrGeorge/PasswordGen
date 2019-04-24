@@ -11,7 +11,8 @@ if "." not in __name__:
 else:
     from .tools import EN, RU, pair
 
-def pronounceable(width=(8,12), voc=EN, seed=None):
+
+def pronounceable(width=(8, 12), voc=EN, seed=None):
     """Generate a pronounceable word (vowel-consonant)+ type
     voc is a pair of vocabularies (vowels, consonants), default is EN
     you can provide seed for the sake of reproducibility
@@ -22,17 +23,19 @@ def pronounceable(width=(8,12), voc=EN, seed=None):
     >>> pronounceable(10,RU,seed=204)
     'ЕДЫЦАПУЛЫМ'
     """
+
     if seed:
         random.seed(seed)
     width, i = random.randrange(*pair(width)), random.randrange(2)
     ret = ""
-    while len(ret)<width:
+    while len(ret) < width:
         ret += voc[i][random.random()]
         i = 1 - i
     return ret[:width]
 
+
 def passphrase(words, seps, nwords, wboundary=None, seed=None):
-    '''Generate passphrase from nwords of words when word len in nboundary
+    """`enerate passphrase from nwords of words when word len in nboundary
     >>> len(passphrase("1234567890","+-*/", 8))
     15
     >>> passphrase("A","b", 8)
@@ -46,7 +49,8 @@ def passphrase(words, seps, nwords, wboundary=None, seed=None):
     'A'
     >>> set(passphrase("A","b", 18)[1::2]).pop()
     'b'
-    '''
+    """
+
     if seed:
         random.seed(seed)
     nwords = random.randrange(*pair(nwords))
@@ -54,10 +58,9 @@ def passphrase(words, seps, nwords, wboundary=None, seed=None):
         words = tuple(words)
     if not hasattr(seps, "__mul__"):
         seps = tuple(seps)
-    seps *= 1+(nwords-1)//len(seps)
-    words *= 1+nwords//len(words)
-    s = random.sample(seps, nwords-1)
+    seps *= 1 + (nwords - 1) // len(seps)
+    words *= 1 + nwords // len(words)
+    s = random.sample(seps, nwords - 1)
     w = random.sample(words, nwords)
     ret = "".join(chain(*zip_longest(w, s, fillvalue="")))
     return ret
-

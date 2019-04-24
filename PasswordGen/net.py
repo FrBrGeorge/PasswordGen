@@ -26,6 +26,7 @@ import io
 import re
 from html.parser import HTMLParser
 
+
 def get_txt(url, name):
     '''Get textfile with words
     E. g. from https://github.com/first20hours/google-10000-english
@@ -35,6 +36,7 @@ def get_txt(url, name):
     10000
     '''
     return urlopen(url).read().decode()
+
 
 def get_tar(url, fname):
     '''Get tar[.gz|.bz2|...] file and extract data from filename
@@ -48,6 +50,7 @@ def get_tar(url, fname):
             with tarfile.open(fname, "r", fd) as v:
                 with v.extractfile(fname) as w:
                     return w.read().decode()
+
 
 class HTMLFilter(HTMLParser):
     '''Filter text from HTML body
@@ -74,6 +77,7 @@ GPLv2
     '''
     visible = False
     text = ""
+
     def handle_starttag(self, tag, attrs):
         if tag.lower() == "body":
             self.visible = True
@@ -86,6 +90,7 @@ GPLv2
         if self.visible:
             self.text += data
 
+
 def get_html(url, fname):
     '''Get html text and filter out all tags
 
@@ -95,6 +100,7 @@ def get_html(url, fname):
     flt = HTMLFilter()
     flt.feed(urlopen(url).read().decode())
     return flt.text
+
 
 def get(name):
     '''Get sequence of words from various sources
@@ -109,6 +115,7 @@ def get(name):
     url, name, get, flt = URLS[name]
     return re.findall(flt, get(url, name))
 
+
 def getvoc(name):
     '''Get word list and unique sort them
     >>> getvoc("google-10000-english")[-100]
@@ -116,14 +123,15 @@ def getvoc(name):
     '''
     return sorted(set(get(name)))
 
+
 reENG = re.compile(r"[A-Za-z]+")
 reRUS = re.compile(r"[А-Яа-я]+")
 reALL = re.compile(r".+")
 
 Site = namedtuple("URLS", "URL name get filter")
 
-URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt, reENG),
-         "linux.words": Site("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz", "./usr/dict/linux.words", get_tar, reENG),
-         "anna-karenina": Site("http://tolstoy.ru/online/online-fiction/anna-karenina/", "anna-karenina", get_html, reRUS),
-         "GPLv2": Site("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html","gpl2", get_html, reENG),
-       }
+URLS = {"google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt, reENG),
+        "linux.words": Site("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz", "./usr/dict/linux.words", get_tar, reENG),
+        "anna-karenina": Site("http://tolstoy.ru/online/online-fiction/anna-karenina/", "anna-karenina", get_html, reRUS),
+        "GPLv2": Site("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html", "gpl2", get_html, reENG),
+        }

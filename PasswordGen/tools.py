@@ -6,8 +6,8 @@ Some common tools
 '''
 # runargs: -i
 
-import random
 from collections import Counter
+
 
 def pair(r):
     '''Convert a number, or a range, or a pair into pair:
@@ -20,11 +20,12 @@ def pair(r):
     '''
     try:
         return r[0], r[1]
-    except:
+    except (TypeError, IndexError):
         try:
             return r.start, r.stop
-        except:
-            return r, r+1
+        except AttributeError:
+            return r, r + 1
+
 
 class Voc:
     '''Vocabulary
@@ -47,15 +48,15 @@ class Voc:
         A:0.100 B:0.200 C:0.300 D:0.400
         '''
         if empty:
-            chars = ("",)+tuple(chars)
+            chars = ("",) + tuple(chars)
         if not probs:
             chars, probs = zip(*Counter(chars).items())
         s = sum(probs)
-        probs = tuple(p/s for p in probs)
+        probs = tuple(p / s for p in probs)
         self.vocabulary = dict(zip(chars, probs))
 
     def __str__(self):
-        return " ".join(f"{k}:{v:5.3f}" for k,v in self.vocabulary.items())
+        return " ".join(f"{k}:{v:5.3f}" for k, v in self.vocabulary.items())
 
     def __getitem__(self, idx):
         """Voc[prob] — select k: sum(probs[:i])<idx<=sum(probs[:i+1])
@@ -70,10 +71,12 @@ class Voc:
             s = 0
             for k, v in self.vocabulary.items():
                 s += v
-                if s>=idx: break
+                if s >= idx:
+                    break
             return k
         else:
             return tuple(self.vocabulary.keys())[idx]
+
 
 RU = Voc("АОУЫЭЯЁЮИЕ"), Voc("БВГДЖЗЙКЛМНПРСТФХЦЧШЩ")
 EN = Voc("AOUIE"), Voc("BCDFGHJKLMNPQRSTVWXYZ")

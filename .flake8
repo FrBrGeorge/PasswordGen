@@ -1,0 +1,3 @@
+[flake8]
+ignore =    E501, # Line too long // doctest
+#            E226, # some whitespaces are boring
