@@ -6,7 +6,10 @@ Password/passhprase generation algorithms
 
 import random
 from itertools import chain, zip_longest
-from tools import EN, RU, pair
+if "." not in __name__:
+    from tools import EN, RU, pair
+else:
+    from .tools import EN, RU, pair
 
 def pronounceable(width=(8,12), voc=EN, seed=None):
     """Generate a pronounceable word (vowel-consonant)+ type
