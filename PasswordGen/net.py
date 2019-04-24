@@ -17,18 +17,28 @@ True
 # python3 -c 'import urllib.request; import random; print(" ".join(random.sample(urllib.request.urlopen("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt").read().decode().split(),4)))'
 #
 # TODO linux words http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz
+# runargs: -i
 
 from urllib.request import urlopen
 from collections import namedtuple
 
-def get_txt(name):
+def get_txt(url):
     '''Get textfile with words
     E. g. from https://github.com/first20hours/google-10000-english
 
-    >>> len(get_txt("google-10000-english"))
+    >>> len(get_txt(URLS["google-10000-english"][0]))
     10000
     '''
-    return urlopen(URLS[name].URL).read().decode().split()
+    return urlopen(url).read().decode().split()
+
+def get(name):
+    '''Get sequence of words from various sources
+
+    >>> get("google-10000-english")[42]
+    'but'
+    '''
+    url, get = URLS[name]
+    return get(url)
 
 Site = namedtuple("URLS", "URL get")
 
