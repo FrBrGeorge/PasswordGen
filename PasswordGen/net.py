@@ -37,9 +37,9 @@ def get(name):
     >>> get("google-10000-english")[42]
     'but'
     '''
-    url, get = URLS[name]
+    url, name, get = URLS[name]
     return get(url)
 
-Site = namedtuple("URLS", "URL get")
+Site = namedtuple("URLS", "URL name get")
 
-URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", get_txt) }
+URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt) }
