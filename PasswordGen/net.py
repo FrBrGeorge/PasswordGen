@@ -23,29 +23,30 @@ from urllib.request import urlopen
 from collections import namedtuple
 import tarfile
 import io
+import re
 
 def get_txt(url, name):
     '''Get textfile with words
     E. g. from https://github.com/first20hours/google-10000-english
     (name is unused)
 
-    >>> len(get_txt(URLS["google-10000-english"][0],""))
+    >>> len(get_txt(URLS["google-10000-english"][0],"").split())
     10000
     '''
-    return urlopen(url).read().decode().split()
+    return urlopen(url).read().decode()
 
 def get_tar(url, fname):
     '''Get tar[.gz|.bz2|...] file and extract data from filename
     E. g. "./usr/dict/linux.words" from "http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz"
 
-    >>> get_tar("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz","./usr/dict/linux.words")[-1]
+    >>> get_tar("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz","./usr/dict/linux.words").split()[-1]
     'Zurich'
     '''
     with urlopen(url) as f:
         with io.BytesIO(f.read()) as fd:
             with tarfile.open(fname, "r", fd) as v:
                 with v.extractfile(fname) as w:
-                    return w.read().decode().split()
+                    return w.read().decode()
 
 def get(name):
     '''Get sequence of words from various sources
@@ -53,13 +54,17 @@ def get(name):
     >>> get("google-10000-english")[42]
     'but'
     >>> get("linux.words")[12345]
-    'determiner'
+    'determined'
     '''
-    url, name, get = URLS[name]
-    return get(url, name)
+    url, name, get, flt = URLS[name]
+    return re.findall(flt, get(url, name))
 
-Site = namedtuple("URLS", "URL name get")
+reENG = re.compile(r"[A-Za-z]+")
+reRUS = re.compile(r"[А-Яа-я]+")
+reALL = re.compile(r".+")
 
-URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt),
-         "linux.words": Site("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz", "./usr/dict/linux.words", get_tar),
+Site = namedtuple("URLS", "URL name get filter")
+
+URLS = { "google-10000-english": Site("https://github.com/first20hours/google-10000-english/raw/master/google-10000-english.txt", "google-10000-english", get_txt, reENG),
+         "linux.words": Site("http://www.ibiblio.org/pub/Linux/libs/linux.words.2.tar.gz", "./usr/dict/linux.words", get_tar, reENG),
        }
