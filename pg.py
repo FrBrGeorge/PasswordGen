@@ -15,6 +15,17 @@ class MockWidget(LabelFrame):
         self.columnconfigure(0, weight=1)
         self.descr = Label(self, text=context)
         self.descr.grid(row=0, column=0, sticky="NEWS")
+        self.grid(sticky="NEWS")
+
+
+class Caller(LabelFrame):
+    def __init__(self, master=None, label="select something", actions={}, **kwargs):
+        LabelFrame.__init__(self, master, text=label) # TODO Frame parameters?
+        self.Var = StringVar(self, kwargs["values"][0])
+        self.Combo = Combobox(self, textvariable=self.Var, **kwargs)
+        self.Combo.grid(row=0, column=0, sticky="WE")
+        self.columnconfigure(0, weight=1)
+        # TODO analyze actions and generate parameter row
 
 
 class App(Frame):
@@ -27,9 +38,9 @@ class App(Frame):
         self.master.title(title)
         self.grid(sticky="NEWS")
 
-        self.vAlg = StringVar(self, "Select algorithm")
-        fAlg = MockWidget(self, text="Algorithm", context="Algorithm menubutton")
-        fAlg.grid(row=0, column=0, sticky="NEWS")
+        self.fAlg = Caller(self, "Algorithm", values=("A","B"))
+        #fAlg = MockWidget(self, text="Algorithm", context="Algorithm menubutton")
+        self.fAlg.grid(row=0, column=0, sticky="NEWS")
         self.rowconfigure(0, weight=0)
 
         self.fPar = MockWidget(self, text="Algorithm parameters", context="Algorithm parameters")
