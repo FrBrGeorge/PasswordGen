@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 '''
-Passphrase/password generator
+Passphrase/password generator version 0
 '''
 
 from tkinter import *
